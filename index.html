@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cursor.solutions</title>
+    <link rel="icon" type="image/svg+xml" href="https://mintlify.s3.us-west-1.amazonaws.com/cursor/images/logo/app-logo.svg">
+    <link rel="stylesheet" href="styles.css">
+    <!-- 100% privacy-first analytics -->
+    <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+    <style>
+        .tag-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .tag-icon:hover {
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        .tag-tooltip {
+            position: absolute;
+            top: 50px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            z-index: 10;
+            display: none;
+            width: max-content;
+            max-width: 250px;
+        }
+
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .tag {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .video-card {
+            position: relative;
+        }
+
+        .tag-icon.active + .tag-tooltip {
+            display: block;
+        }
+
+        .mobile-menu-button {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            padding: 0.5rem;
+            cursor: pointer;
+        }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--brand-borders);
+            padding: 0.5rem 1.5rem;
+            z-index: 50;
+        }
+
+        .mobile-menu.active {
+            display: block;
+        }
+
+        .mobile-menu .nav-link {
+            display: block;
+            padding: 0.75rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-button {
+                display: block;
+            }
+
+            .nav {
+                display: none;
+            }
+
+            .mobile-menu .nav-link {
+                padding: 1rem;
+                display: flex;
+                align-items: center;
+                touch-action: manipulation;
+                min-height: 44px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="flex items-center justify-between py-4 px-6 backdrop-blur-sm bg-header">
+            <div class="flex items-center gap-3">
+                <button class="mobile-menu-button" aria-label="Toggle menu">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 6H20M4 12H20M4 18H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+                <a href="/" class="flex items-center gap-3 hover:opacity-75 transition-opacity text-decoration-none title-text" target="_blank">
+                    <img src="https://mintlify.s3.us-west-1.amazonaws.com/cursor/images/logo/app-logo.svg" alt="Cursor Logo" class="w-7 h-7">
+                    <h1 class="text-xl font-medium tracking-tight">cursor.solutions</h1>
+                </a>
+            </div>
+            <nav class="flex items-center gap-6 ml-24 nav">
+                <a href="https://www.cursor.com/blog" class="nav-link" target="_blank">blog</a>
+                <a href="https://forum.cursor.com" class="nav-link" target="_blank">forum</a>
+                <a href="https://www.cursor.directory" class="nav-link" target="_blank">cursor.directory</a>
+                <a href="/mcp-builder.html" class="nav-link">mcp builder</a>
+            </nav>
+            <div class="search-controls flex items-center gap-3">
+                <button id="filterButton" class="filter-button" aria-label="Filter videos">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 4.5h18M7 12h10M11 19.5h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    <span>Filter</span>
+                </button>
+                <div class="search-container">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="Search videos..." 
+                        spellcheck="false"
+                        autocomplete="off"
+                    >
+                </div>
+            </div>
+        </header>
+
+        <div class="mobile-menu">
+            <a href="https://www.cursor.com/blog" class="nav-link block py-2" target="_blank">blog</a>
+            <a href="https://forum.cursor.com" class="nav-link block py-2" target="_blank">forum</a>
+            <a href="https://www.cursor.directory" class="nav-link block py-2" target="_blank">cursor.directory</a>
+            <a href="/mcp-builder.html" class="nav-link block py-2">mcp builder</a>
+        </div>
+        
+        <main class="flex-1 min-h-0 px-6 py-8">
+            <div id="videoGrid" class="fade-in"></div>
+        </main>
+        
+        <div id="pagination" class="py-6"></div>
+    </div>
+
+    <div id="filterModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Filter by Tags</h2>
+                <button class="close-modal" aria-label="Close modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="tagsList" class="tags-list"></div>
+            </div>
+            <div class="modal-footer">
+                <button id="clearFilters" class="modal-button secondary">Clear Filters</button>
+                <button id="applyFilters" class="modal-button primary">Apply Filters</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="videos.js"></script>
+    <script src="app.js"></script>
+    <script src="filter.js"></script>
+    <script>
+        // Mobile menu functionality
+        const mobileMenuButton = document.querySelector('.mobile-menu-button');
+        const mobileMenu = document.querySelector('.mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('active');
+            mobileMenuButton.setAttribute('aria-expanded', 
+                mobileMenu.classList.contains('active') ? 'true' : 'false'
+            );
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!mobileMenu.contains(e.target) && !mobileMenuButton.contains(e.target)) {
+                mobileMenu.classList.remove('active');
+                mobileMenuButton.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        // Tag tooltip functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            const videoGrid = document.getElementById('videoGrid');
+            
+            // Add mouseover event delegation for tag icons
+            videoGrid.addEventListener('mouseover', (e) => {
+                if (e.target.closest('.tag-icon')) {
+                    e.target.closest('.tag-icon').classList.add('active');
+                }
+            });
+
+            // Add mouseout event delegation for tag icons
+            videoGrid.addEventListener('mouseout', (e) => {
+                if (e.target.closest('.tag-icon')) {
+                    e.target.closest('.tag-icon').classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html> 
