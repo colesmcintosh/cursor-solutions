@@ -10,14 +10,14 @@ cursor.solutions is a community-driven platform that provides resources, tools, 
 
 ### Prerequisites
 
-- A modern web browser
-- Cursor IDE (recommended for development)
+- web browser
+- IDE (recommended for development)
 
 ### Running Locally
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/cursor-solutions.git
+git clone https://github.com/colesmcintosh/cursor-solutions.git
 cd cursor-solutions
 ```
 
