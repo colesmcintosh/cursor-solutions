@@ -6,6 +6,22 @@ An open source everything website for Cursor AI.
 
 cursor.solutions is a community-driven platform that provides resources, tools, and solutions for Cursor AI users. This repository contains the source code for the website.
 
+## Features
+
+### mcp.json Builder
+
+The site includes an mcp.json builder tool that helps you quickly create configuration files for Model Context Protocol servers. Simply select the servers you need, and the tool will generate the JSON configuration for you to download.
+
+Available MCP servers include:
+- AWS KB Retrieval
+- Brave Search
+- GitHub
+- Google Maps
+- Stripe
+- Neon (Postgres)
+- Slack
+- And many more!
+
 ## Getting Started
 
 ### Prerequisites
